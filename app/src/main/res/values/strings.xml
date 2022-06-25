@@ -55,6 +55,7 @@
     <string name="key_ns_profile_store_last_synced_timestamp" translatable="false">ns_profile_store_last_synced_timestamp</string>
     <string name="key_local_profile_last_change" translatable="false">local_profile_last_change</string>
     <string name="key_ns_sync_slow" translatable="false">ns_sync_slow</string>
+    <string name="key_nsclient_token" translatable="false">nsclient_token</string>
     <string name="treatmentssafety_title">Treatments safety</string>
     <string name="treatmentssafety_maxbolus_title">Max allowed bolus [U]</string>
     <string name="treatmentssafety_maxcarbs_title">Max allowed carbs [g]</string>
@@ -363,6 +364,9 @@
     <string name="nsclientinternal_secret_title">NS API secret</string>
     <string name="nsclientinternal_secret_dialogtitle">NS API secret</string>
     <string name="nsclientinternal_secret_dialogmessage">Enter NS API secret (min 12 chars)</string>
+    <string name="nsclient_token_title">NS access token</string>
+    <string name="nsclient_token_dialog_title">NS access token</string>
+    <string name="nsclient_token_dialog_message">Access token generated on NS admin page (min 17 chars)</string>
     <string name="deliver_now">Deliver now</string>
     <string name="clear_queue">Clear queue</string>
     <string name="show_queue">Show queue</string>

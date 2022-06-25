@@ -16,12 +16,12 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-public interface NSAndroidClient {
+interface NSAndroidClient {
 
-    public suspend fun getVersion(): String
-    public suspend fun getStatus(): Status
-    public suspend fun getEntries(): String
-    public suspend fun getSgvs(): List<Sgv>
+    suspend fun getVersion(): String
+    suspend fun getStatus(): Status
+    suspend fun getEntries(): String
+    suspend fun getSgvs(): List<Sgv>
 }
 
 /**
@@ -48,7 +48,7 @@ public interface NSAndroidClient {
 
 @JvmSynthetic
 @Suppress("FunctionNaming")
-public fun NSAndroidClient(
+fun NSAndroidClient(
     baseUrl: String,
     accessToken: String,
     context: Context,
@@ -64,10 +64,10 @@ public fun NSAndroidClient(
     )
 
 private class NSAndroidClientImpl(
-    private val baseUrl: String,
-    private val accessToken: String,
-    private val context: Context,
-    private val logging: Boolean,
+    baseUrl: String,
+    accessToken: String,
+    context: Context,
+    logging: Boolean,
     private val dispatcher: CoroutineDispatcher
 ) : NSAndroidClient {
 

@@ -2,7 +2,7 @@ package info.nightscout.sdk.networking
 
 import info.nightscout.sdk.exceptions.DateHeaderOutOfToleranceException
 import info.nightscout.sdk.exceptions.InvalidAccessTokenException
-import info.nightscout.sdk.networking.Status.MESSAGE_DATEHEADER_OUT_OF_TOLERANCE
+import info.nightscout.sdk.networking.Status.MESSAGE_DATE_HEADER_OUT_OF_TOLERANCE
 import info.nightscout.sdk.remotemodel.RemoteAuthResponse
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -61,7 +61,7 @@ internal class NSAuthInterceptor(private val refreshToken: String, private val r
 
     private fun testCanRefresh(initialResponse: Response) {
         // Todo: use proper reason code once it is supplied by remote
-        if (initialResponse.body?.string()?.contains(MESSAGE_DATEHEADER_OUT_OF_TOLERANCE) == true) {
+        if (initialResponse.body?.string()?.contains(MESSAGE_DATE_HEADER_OUT_OF_TOLERANCE) == true) {
             throw DateHeaderOutOfToleranceException()
         }
     }

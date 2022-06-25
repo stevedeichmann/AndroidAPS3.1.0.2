@@ -8,14 +8,14 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-public interface NSAndroidCallbackClient {
+interface NSAndroidCallbackClient {
 
-    public fun getStatus(callback: NSCallback<Status>): NSCancellable
+    fun getStatus(callback: NSCallback<Status>): NSCancellable
 
-    public companion object { // TODO: test if callable from Java. If not, use named Object
+    companion object { // TODO: test if callable from Java. If not, use named Object
         @JvmStatic
         @JvmOverloads
-        public fun create(
+        fun create(
             baseUrl: String,
             accessToken: String,
             context: Context,
@@ -49,15 +49,18 @@ private class NSAndroidCallbackClientImpl(private val client: NSAndroidClient) :
         )
 }
 
-public interface NSCallback<T> {
-    public fun onSuccess(value: T)
-    public fun onFailure(exception: Exception)
+interface NSCallback<T> {
+
+    fun onSuccess(value: T)
+    fun onFailure(exception: Exception)
 }
 
-public interface NSCancellable {
-    public fun cancel()
+interface NSCancellable {
+
+    fun cancel()
 }
 
 private class NSJobCancellable(val job: Job) : NSCancellable {
+
     override fun cancel() = job.cancel()
 }

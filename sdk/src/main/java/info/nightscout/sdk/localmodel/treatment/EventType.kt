@@ -1,6 +1,6 @@
-package info.nightscout.sdk.localmodel.Treatment
+package info.nightscout.sdk.localmodel.treatment
 
-public enum class EventType {
+enum class EventType {
     FINGER_STICK_BG_VALUE,      // BG Check
     SNACK_BOLUS,
     MEAL_BOLUS,

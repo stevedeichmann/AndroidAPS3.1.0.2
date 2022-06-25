@@ -1,3 +1,3 @@
 package info.nightscout.sdk.exceptions
 
-public class TodoNightscoutException : NightscoutException()
+class TodoNightscoutException : NightscoutException()

@@ -1,6 +1,6 @@
 package info.nightscout.sdk.localmodel
 
-public data class Status(
+data class Status(
     val version: String,
     val apiVersion: String,
     val srvDate: Long,

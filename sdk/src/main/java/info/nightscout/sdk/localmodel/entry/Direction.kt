@@ -1,6 +1,6 @@
 package info.nightscout.sdk.localmodel.entry
 
-public enum class Direction(public val nsName: String, public val txtIcon: String) {
+enum class Direction(val nsName: String, val txtIcon: String) {
     TRIPLE_DOWN("TripleDown", "\u290B"), // ⤋
     DOUBLE_DOWN("DoubleDown", "\u21ca"), // ⇊
     SINGLE_DOWN("SingleDown", "\u2193"), // ↓

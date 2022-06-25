@@ -15,7 +15,7 @@ internal data class RemoteEntry(
     @SerializedName("type") val type: String, // sgv, mbg, cal, etc
     @SerializedName("sgv") val sgv: Double?, // number The glucose reading. (only available for sgv types)
     @SerializedName("dateString") val dateString: String,
-    @SerializedName("date") val date: Long, // required ? TODO: date and dateString are redundand - are both needed? how to handle inconsistency then? Only expose one to clients?
+    @SerializedName("date") val date: Long, // required ? TODO: date and dateString are redundant - are both needed? how to handle inconsistency then? Only expose one to clients?
     @SerializedName("device") val device: String?, // The device from which the data originated (including serial number of the device, if it is relevant and safe).
     @SerializedName("direction") val direction: String?, // TODO: what implicit convention for the directions exists?
     @SerializedName("identifier") val identifier: String,

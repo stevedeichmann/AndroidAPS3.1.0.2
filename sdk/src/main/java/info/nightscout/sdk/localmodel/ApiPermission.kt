@@ -1,6 +1,6 @@
 package info.nightscout.sdk.localmodel
 
-public data class ApiPermission(
+data class ApiPermission(
     val create: Boolean,
     val read: Boolean,
     val update: Boolean,

@@ -6,4 +6,4 @@ package info.nightscout.sdk.exceptions
  * In practice this will happen if the server time and the phone time are off.
  *
  */
-public class DateHeaderOutOfToleranceException : NightscoutException()
+class DateHeaderOutOfToleranceException : NightscoutException()

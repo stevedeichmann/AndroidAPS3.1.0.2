@@ -4,6 +4,7 @@ import info.nightscout.sdk.localmodel.entry.Direction
 import info.nightscout.sdk.localmodel.entry.Sgv
 import info.nightscout.sdk.localmodel.entry.SgvUnits
 import info.nightscout.sdk.remotemodel.RemoteEntry
+import java.util.*
 
 @JvmSynthetic
 internal fun SgvUnits.toRemoteString(): String = when (this) {
@@ -12,7 +13,7 @@ internal fun SgvUnits.toRemoteString(): String = when (this) {
 }
 
 @JvmSynthetic
-internal fun String?.toSvgUnits(): SgvUnits = when (this?.toLowerCase()) {
+internal fun String?.toSvgUnits(): SgvUnits = when (this?.lowercase(Locale.getDefault())) {
     "mgdl", "mg/dl", "mg" -> SgvUnits.MG_DL
     "mmol", "mmol/l", "mol", "mmoll" -> SgvUnits.MMOL_L
     else -> SgvUnits.MG_DL

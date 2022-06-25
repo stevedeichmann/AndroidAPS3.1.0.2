@@ -1,6 +1,6 @@
 package info.nightscout.sdk.localmodel
 
-public data class ApiPermissions(
+data class ApiPermissions(
     val deviceStatus: ApiPermission,
     val entries: ApiPermission,
     val food: ApiPermission,

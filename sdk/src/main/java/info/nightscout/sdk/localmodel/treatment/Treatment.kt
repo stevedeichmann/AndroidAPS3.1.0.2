@@ -1,9 +1,10 @@
-package info.nightscout.sdk.localmodel.entry
+package info.nightscout.sdk.localmodel.treatment
 
-interface Entry {
+interface Treatment {
     val date: Long
     val device: String?
     val identifier: String
+    val eventType: EventType
     val srvModified: Long
     val srvCreated: Long
     val utcOffset: Int

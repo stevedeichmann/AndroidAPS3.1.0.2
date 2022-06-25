@@ -5,15 +5,15 @@ import info.nightscout.sdk.localmodel.Status
 import io.reactivex.Single
 import kotlinx.coroutines.rx2.rxSingle
 
-public interface NSAndroidRxClient {
+interface NSAndroidRxClient {
 
-    public fun getVersion(): Single<String>
-    public fun getStatus(): Single<Status>
+    fun getVersion(): Single<String>
+    fun getStatus(): Single<Status>
 
-    public companion object { // TODO: test if callable from Java. If not, use named Object
+    companion object { // TODO: test if callable from Java. If not, use named Object
         @JvmStatic
         @JvmOverloads
-        public fun create(
+        fun create(
             baseUrl: String,
             accessToken: String,
             context: Context,

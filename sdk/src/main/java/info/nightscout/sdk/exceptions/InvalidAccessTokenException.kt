@@ -1,3 +1,3 @@
 package info.nightscout.sdk.exceptions
 
-public class InvalidAccessTokenException : NightscoutException()
+class InvalidAccessTokenException : NightscoutException()

@@ -1,7 +1,7 @@
 package info.nightscout.sdk.mapper
 
-import info.nightscout.sdk.localmodel.Treatment.EventType
-import info.nightscout.sdk.localmodel.Treatment.GlucoseType
+import info.nightscout.sdk.localmodel.treatment.EventType
+import info.nightscout.sdk.localmodel.treatment.GlucoseType
 
 @JvmSynthetic
 internal fun EventType.toRemoteString(): String = when (this) {
