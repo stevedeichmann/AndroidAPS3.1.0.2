@@ -176,6 +176,7 @@ dependencies {
     wearApp project(':wear')
 
     implementation project(':shared')
+    implementation project(':sdk')
     implementation project(':core')
     implementation project(':automation')
     implementation project(':combo')
