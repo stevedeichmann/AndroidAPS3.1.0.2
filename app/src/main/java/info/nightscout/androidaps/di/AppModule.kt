@@ -17,7 +17,7 @@ import info.nightscout.androidaps.plugins.configBuilder.ProfileFunctionImplement
 import info.nightscout.androidaps.plugins.general.autotune.AutotunePlugin
 import info.nightscout.androidaps.plugins.general.maintenance.ImportExportPrefsImpl
 import info.nightscout.androidaps.plugins.general.maintenance.PrefFileListProvider
-import info.nightscout.androidaps.plugins.general.nsclient.data.DeviceStatusData
+import info.nightscout.androidaps.plugins.sync.nsclient.data.DeviceStatusData
 import info.nightscout.androidaps.plugins.general.smsCommunicator.SmsCommunicatorPlugin
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.IobCobCalculatorPlugin
 import info.nightscout.androidaps.plugins.pump.PumpSyncImplementation

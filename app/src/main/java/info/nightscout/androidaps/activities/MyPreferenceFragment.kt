@@ -31,8 +31,8 @@ import info.nightscout.androidaps.plugins.constraints.safety.SafetyPlugin
 import info.nightscout.androidaps.plugins.general.automation.AutomationPlugin
 import info.nightscout.androidaps.plugins.general.autotune.AutotunePlugin
 import info.nightscout.androidaps.plugins.general.maintenance.MaintenancePlugin
-import info.nightscout.androidaps.plugins.general.nsclient.NSClientPlugin
-import info.nightscout.androidaps.plugins.general.nsclient.data.NSSettingsStatus
+import info.nightscout.androidaps.plugins.sync.nsclient.NSClientPlugin
+import info.nightscout.androidaps.plugins.sync.nsclient.data.NSSettingsStatus
 import info.nightscout.androidaps.plugins.general.smsCommunicator.SmsCommunicatorPlugin
 import info.nightscout.androidaps.plugins.general.wear.WearPlugin
 import info.nightscout.androidaps.plugins.general.xdripStatusline.StatusLinePlugin

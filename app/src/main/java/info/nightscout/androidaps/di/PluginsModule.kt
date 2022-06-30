@@ -29,7 +29,6 @@ import info.nightscout.androidaps.plugins.general.autotune.AutotunePlugin
 import info.nightscout.androidaps.plugins.general.dataBroadcaster.DataBroadcastPlugin
 import info.nightscout.androidaps.plugins.general.food.FoodPlugin
 import info.nightscout.androidaps.plugins.general.maintenance.MaintenancePlugin
-import info.nightscout.androidaps.plugins.general.nsclient.NSClientPlugin
 import info.nightscout.androidaps.plugins.general.overview.OverviewPlugin
 import info.nightscout.androidaps.plugins.general.persistentNotification.PersistentNotificationPlugin
 import info.nightscout.androidaps.plugins.general.smsCommunicator.SmsCommunicatorPlugin
@@ -52,6 +51,7 @@ import info.nightscout.androidaps.plugins.sensitivity.SensitivityAAPSPlugin
 import info.nightscout.androidaps.plugins.sensitivity.SensitivityOref1Plugin
 import info.nightscout.androidaps.plugins.sensitivity.SensitivityWeightedAveragePlugin
 import info.nightscout.androidaps.plugins.source.*
+import info.nightscout.androidaps.plugins.sync.nsclient.NSClientPlugin
 import javax.inject.Qualifier
 
 @Suppress("unused")

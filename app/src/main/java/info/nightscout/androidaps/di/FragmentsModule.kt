@@ -17,7 +17,7 @@ import info.nightscout.androidaps.plugins.general.automation.dialogs.*
 import info.nightscout.androidaps.plugins.general.autotune.AutotuneFragment
 import info.nightscout.androidaps.plugins.general.food.FoodFragment
 import info.nightscout.androidaps.plugins.general.maintenance.MaintenanceFragment
-import info.nightscout.androidaps.plugins.general.nsclient.NSClientFragment
+import info.nightscout.androidaps.plugins.sync.nsclient.NSClientFragment
 import info.nightscout.androidaps.plugins.general.overview.OverviewFragment
 import info.nightscout.androidaps.plugins.general.overview.dialogs.EditQuickWizardDialog
 import info.nightscout.androidaps.plugins.general.smsCommunicator.SmsCommunicatorFragment

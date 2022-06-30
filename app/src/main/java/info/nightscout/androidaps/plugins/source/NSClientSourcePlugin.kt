@@ -11,7 +11,7 @@ import info.nightscout.androidaps.database.entities.GlucoseValue
 import info.nightscout.androidaps.database.transactions.CgmSourceTransaction
 import info.nightscout.androidaps.interfaces.*
 import info.nightscout.androidaps.plugins.bus.RxBus
-import info.nightscout.androidaps.plugins.general.nsclient.data.NSSgv
+import info.nightscout.androidaps.plugins.sync.nsclient.data.NSSgv
 import info.nightscout.androidaps.plugins.general.overview.events.EventDismissNotification
 import info.nightscout.androidaps.plugins.general.overview.notifications.Notification
 import info.nightscout.androidaps.receivers.DataWorker

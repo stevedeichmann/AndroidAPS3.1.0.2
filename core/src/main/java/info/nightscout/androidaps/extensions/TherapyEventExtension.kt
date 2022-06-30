@@ -5,7 +5,7 @@ import info.nightscout.androidaps.core.R
 import info.nightscout.androidaps.database.entities.TherapyEvent
 import info.nightscout.androidaps.interfaces.GlucoseUnit
 import info.nightscout.androidaps.interfaces.ResourceHelper
-import info.nightscout.androidaps.plugins.general.nsclient.data.NSMbg
+import info.nightscout.androidaps.plugins.sync.nsclient.data.NSMbg
 import info.nightscout.androidaps.utils.DateUtil
 import info.nightscout.androidaps.utils.JsonHelper
 import info.nightscout.androidaps.utils.T
