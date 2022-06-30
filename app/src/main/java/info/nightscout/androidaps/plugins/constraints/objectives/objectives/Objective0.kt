@@ -8,7 +8,6 @@ import info.nightscout.androidaps.interfaces.ActivePlugin
 import info.nightscout.androidaps.interfaces.IobCobCalculator
 import info.nightscout.androidaps.interfaces.Loop
 import info.nightscout.androidaps.interfaces.PluginBase
-import info.nightscout.androidaps.plugins.general.nsclient.NSClientPlugin
 import info.nightscout.androidaps.plugins.pump.virtual.VirtualPumpPlugin
 import javax.inject.Inject
 
@@ -18,7 +17,6 @@ class Objective0(injector: HasAndroidInjector) : Objective(injector, "config", R
     @Inject lateinit var virtualPumpPlugin: VirtualPumpPlugin
     @Inject lateinit var repository: AppRepository
     @Inject lateinit var loop: Loop
-    @Inject lateinit var nsClientPlugin: NSClientPlugin
     @Inject lateinit var iobCobCalculator: IobCobCalculator
 
     init {
@@ -29,7 +27,7 @@ class Objective0(injector: HasAndroidInjector) : Objective(injector, "config", R
         })
         tasks.add(object : Task(this, R.string.nsclienthaswritepermission) {
             override fun isCompleted(): Boolean {
-                return nsClientPlugin.hasWritePermission()
+                return activePlugin.activeNsClient?.hasWritePermission == true
             }
         })
         tasks.add(object : Task(this, R.string.virtualpump_uploadstatus_title) {

@@ -38,7 +38,6 @@ class NSClientAddUpdateWorker(
     params: WorkerParameters
 ) : Worker(context, params) {
 
-    @Inject lateinit var nsClientPlugin: NSClientPlugin
     @Inject lateinit var dataWorker: DataWorker
     @Inject lateinit var aapsLogger: AAPSLogger
     @Inject lateinit var buildHelper: BuildHelper
@@ -509,7 +508,7 @@ class NSClientAddUpdateWorker(
                     }
                 }
         }
-        nsClientPlugin.updateLatestDateReceivedIfNewer(latestDateInReceivedData)
+        activePlugin.activeNsClient?.updateLatestDateReceivedIfNewer(latestDateInReceivedData)
         xDripBroadcast.sendTreatments(treatments)
         return ret
     }

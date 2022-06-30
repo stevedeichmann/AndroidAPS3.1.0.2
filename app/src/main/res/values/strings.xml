@@ -76,6 +76,7 @@
     <string name="description_insulin_lyumjev">Insulin preset for Lyumjev</string>
     <string name="description_insulin_free_peak">Allows you to define the peak of the insulin activity and should only be used by advanced users</string>
     <string name="description_loop">Activate or deactivate the implementation triggering the loop.</string>
+    <string name="description_ns_client_v3">Synchronizes your data with Nightscout using v3 API</string>
     <string name="description_ns_client">Synchronizes your data with Nightscout</string>
     <string name="description_ama">State of the algorithm in 2017</string>
     <string name="description_smb">Most recent algorithm for advanced users</string>
@@ -139,6 +140,8 @@
     <string name="configbuilder_aps_description">Which APS algorithm should make therapy adjustments?</string>
     <string name="configbuilder_general">General</string>
     <string name="configbuilder_general_description">These are some general plugins you might find useful.</string>
+    <string name="configbuilder_sync">Synchronization</string>
+    <string name="configbuilder_sync_description">Data upload and synchronization plugins.</string>
     <string name="configbuilder_constraints_description">Which constraints are applied?</string>
     <string name="constraints">Constraints</string>
     <string name="configbuilder_loop">Loop</string>
@@ -164,7 +167,7 @@
     <string name="apsmode_title">APS Mode</string>
     <string name="closedloop">Closed Loop</string>
     <string name="openloop">Open Loop</string>
-   <string name="lowglucosesuspend">Low Glucose Suspend</string>
+    <string name="lowglucosesuspend">Low Glucose Suspend</string>
     <string name="disabledloop">Loop Disabled</string>
     <string name="openloop_newsuggestion">New suggestion available</string>
     <string name="carbssuggestion">Carbs Suggestion</string>
@@ -353,6 +356,8 @@
     <string name="executing">Executing</string>
     <string name="virtualpump_settings">Virtual pump settings</string>
     <string name="virtualpump_uploadstatus_title">Upload status to NS</string>
+    <string name="nsclientv3">NSClientV3</string>
+    <string name="nsclientv3_shortname">NSV3</string>
     <string name="nsclientinternal">NSClient</string>
     <string name="nsclientinternal_shortname">NSCI</string>
     <string name="nsclientinternal_url">URL:</string>
@@ -1247,7 +1252,7 @@
     <string name="a11y_only_on_phone">only on phone</string>
     <string name="a11y_drag_and_drop_handle">drag and drop handle</string>
 
-  <!-- Aidex Cgms -->
+    <!-- Aidex Cgms -->
     <string name="aidex">GlucoRx Aidex</string>
     <string name="aidex_short">Aidex</string>
     <string name="description_source_aidex">Receive BG values from GlucoRx Aidex CGMS.</string>

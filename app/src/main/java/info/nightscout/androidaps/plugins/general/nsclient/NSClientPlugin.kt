@@ -7,6 +7,7 @@ import android.content.ServiceConnection
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.IBinder
+import android.text.Spanned
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreference
@@ -17,11 +18,7 @@ import info.nightscout.androidaps.events.EventAppExit
 import info.nightscout.androidaps.events.EventChargingState
 import info.nightscout.androidaps.events.EventNetworkChange
 import info.nightscout.androidaps.events.EventPreferenceChange
-import info.nightscout.androidaps.interfaces.Config
-import info.nightscout.androidaps.interfaces.PluginBase
-import info.nightscout.androidaps.interfaces.PluginDescription
-import info.nightscout.androidaps.interfaces.PluginType
-import info.nightscout.androidaps.interfaces.ResourceHelper
+import info.nightscout.androidaps.interfaces.*
 import info.nightscout.androidaps.plugins.bus.RxBus
 import info.nightscout.androidaps.plugins.general.nsclient.data.AlarmAck
 import info.nightscout.androidaps.plugins.general.nsclient.data.NSAlarm
@@ -33,7 +30,6 @@ import info.nightscout.androidaps.plugins.general.nsclient.services.NSClientServ
 import info.nightscout.androidaps.utils.FabricPrivacy
 import info.nightscout.androidaps.utils.HtmlHelper.fromHtml
 import info.nightscout.androidaps.utils.ToastUtils
-import info.nightscout.androidaps.interfaces.BuildHelper
 import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
@@ -56,9 +52,9 @@ class NSClientPlugin @Inject constructor(
     private val nsClientReceiverDelegate: NsClientReceiverDelegate,
     private val config: Config,
     private val buildHelper: BuildHelper
-) : PluginBase(
+) : NsClient, PluginBase(
     PluginDescription()
-        .mainType(PluginType.GENERAL)
+        .mainType(PluginType.SYNC)
         .fragmentClass(NSClientFragment::class.java.name)
         .pluginIcon(R.drawable.ic_nightscout_syncs)
         .pluginName(R.string.nsclientinternal)
@@ -73,19 +69,14 @@ class NSClientPlugin @Inject constructor(
     private val disposable = CompositeDisposable()
     private val handler = Handler(HandlerThread(this::class.simpleName + "Handler").also { it.start() }.looper)
     private val listLog: MutableList<EventNSClientNewLog> = ArrayList()
-    var textLog = fromHtml("")
-    var paused = false
-    var autoscroll = false
-    var status = ""
-    var nsClientService: NSClientService? = null
+    override var status = ""
+    override var nsClientService: NSClientService? = null
     val isAllowed: Boolean
         get() = nsClientReceiverDelegate.allowed
     val blockingReason: String
         get() = nsClientReceiverDelegate.blockingReason
 
     override fun onStart() {
-        paused = sp.getBoolean(R.string.key_nsclientinternal_paused, false)
-        autoscroll = sp.getBoolean(R.string.key_nsclientinternal_autoscroll, true)
         context.bindService(Intent(context, NSClientService::class.java), mConnection, Context.BIND_AUTO_CREATE)
         super.onStart()
         nsClientReceiverDelegate.grabReceiversState()
@@ -138,16 +129,12 @@ class NSClientPlugin @Inject constructor(
 
             preferenceFragment.findPreference<SwitchPreference>(rh.gs(R.string.key_ns_create_announcements_from_errors))?.isVisible = false
             preferenceFragment.findPreference<SwitchPreference>(rh.gs(R.string.key_ns_create_announcements_from_carbs_req))?.isVisible = false
-//            preferenceFragment.findPreference<SwitchPreference>(rh.gs(R.string.key_ns_sync_use_absolute))?.isVisible = false
-        } else {
-            // APS or pumpControl mode
-//            preferenceFragment.findPreference<SwitchPreference>(rh.gs(R.string.key_ns_receive_profile_switch))?.isVisible = buildHelper.isEngineeringMode()
-//            preferenceFragment.findPreference<SwitchPreference>(rh.gs(R.string.key_ns_receive_insulin))?.isVisible = buildHelper.isEngineeringMode()
-//            preferenceFragment.findPreference<SwitchPreference>(rh.gs(R.string.key_ns_receive_carbs))?.isVisible = buildHelper.isEngineeringMode()
-//            preferenceFragment.findPreference<SwitchPreference>(rh.gs(R.string.key_ns_receive_temp_target))?.isVisible = buildHelper.isEngineeringMode()
         }
         preferenceFragment.findPreference<SwitchPreference>(rh.gs(R.string.key_ns_receive_tbr_eb))?.isVisible = buildHelper.isEngineeringMode()
     }
+
+    override val hasWritePermission: Boolean get() = nsClientService?.hasWriteAuth ?: false
+    override val connected: Boolean get() = nsClientService?.isConnected ?: false
 
     private val mConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceDisconnected(name: ComponentName) {
@@ -162,14 +149,14 @@ class NSClientPlugin @Inject constructor(
         }
     }
 
-    @Synchronized fun clearLog() {
+    override fun clearLog() {
         handler.post {
             synchronized(listLog) { listLog.clear() }
             rxBus.send(EventNSClientUpdateGUI())
         }
     }
 
-    @Synchronized private fun addToLog(ev: EventNSClientNewLog) {
+    private fun addToLog(ev: EventNSClientNewLog) {
         handler.post {
             synchronized(listLog) {
                 listLog.add(ev)
@@ -182,35 +169,32 @@ class NSClientPlugin @Inject constructor(
         }
     }
 
-    @Synchronized fun updateLog() {
+    override fun textLog(): Spanned {
         try {
             val newTextLog = StringBuilder()
             synchronized(listLog) {
-                for (log in listLog) {
-                    newTextLog.append(log.toPreparedHtml())
-                }
+                for (log in listLog) newTextLog.append(log.toPreparedHtml())
             }
-            textLog = fromHtml(newTextLog.toString())
+            return fromHtml(newTextLog.toString())
         } catch (e: OutOfMemoryError) {
             ToastUtils.showToastInUiThread(context, rxBus, "Out of memory!\nStop using this phone !!!", R.raw.error)
         }
+        return fromHtml("")
     }
 
-    fun resend(reason: String) {
+    override fun resend(reason: String) {
         nsClientService?.resend(reason)
     }
 
-    fun pause(newState: Boolean) {
+    override fun pause(newState: Boolean) {
         sp.putBoolean(R.string.key_nsclientinternal_paused, newState)
-        paused = newState
         rxBus.send(EventPreferenceChange(rh, R.string.key_nsclientinternal_paused))
     }
 
-    fun url(): String = nsClientService?.nsURL ?: ""
-    fun hasWritePermission(): Boolean = nsClientService?.hasWriteAuth ?: false
+    override val address: String get() = nsClientService?.nsURL ?: ""
 
     fun handleClearAlarm(originalAlarm: NSAlarm, silenceTimeInMilliseconds: Long) {
-        if (!isEnabled(PluginType.GENERAL)) return
+        if (!isEnabled()) return
         if (!sp.getBoolean(R.string.key_ns_upload, true)) {
             aapsLogger.debug(LTag.NSCLIENT, "Upload disabled. Message dropped")
             return
@@ -223,7 +207,7 @@ class NSClientPlugin @Inject constructor(
             })
     }
 
-    fun updateLatestDateReceivedIfNewer(latestReceived: Long) {
+    override fun updateLatestDateReceivedIfNewer(latestReceived: Long) {
         nsClientService?.let { if (latestReceived > it.latestDateInReceivedData) it.latestDateInReceivedData = latestReceived }
     }
 }

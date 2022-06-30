@@ -95,11 +95,11 @@ class TidepoolPlugin @Inject constructor(
             .toObservable(EventNewBG::class.java)
             .observeOn(aapsSchedulers.io)
             .filter { it.glucoseValue != null } // better would be optional in API level >24
-            .map { it.glucoseValue }
+            .map { it.glucoseValue!! }
             .subscribe({ bgReading ->
                 if (bgReading!!.timestamp  < uploadChunk.getLastEnd())
                     uploadChunk.setLastEnd(bgReading.timestamp )
-                if (isEnabled(PluginType.GENERAL)
+                if (isEnabled()
                     && (!sp.getBoolean(R.string.key_tidepool_only_while_charging, false) || receiverStatusStore.isCharging)
                     && (!sp.getBoolean(R.string.key_tidepool_only_while_unmetered, false) || receiverStatusStore.isWifiConnected)
                     && rateLimit.rateLimit("tidepool-new-data-upload", T.mins(4).secs().toInt()))

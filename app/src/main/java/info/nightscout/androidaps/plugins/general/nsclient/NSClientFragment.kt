@@ -8,6 +8,7 @@ import info.nightscout.androidaps.R
 import info.nightscout.androidaps.database.entities.UserEntry.Action
 import info.nightscout.androidaps.database.entities.UserEntry.Sources
 import info.nightscout.androidaps.databinding.NsClientFragmentBinding
+import info.nightscout.androidaps.interfaces.ActivePlugin
 import info.nightscout.androidaps.interfaces.DataSyncSelector
 import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.androidaps.logging.UserEntryLogger
@@ -30,7 +31,7 @@ import javax.inject.Inject
 
 class NSClientFragment : DaggerFragment() {
 
-    @Inject lateinit var nsClientPlugin: NSClientPlugin
+    @Inject lateinit var activePlugin: ActivePlugin
     @Inject lateinit var sp: SP
     @Inject lateinit var rh: ResourceHelper
     @Inject lateinit var rxBus: RxBus
@@ -66,17 +67,16 @@ class NSClientFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.autoscroll.isChecked = nsClientPlugin.autoscroll
+        binding.autoscroll.isChecked = sp.getBoolean(R.string.key_nsclientinternal_autoscroll, true)
         binding.autoscroll.setOnCheckedChangeListener { _, isChecked ->
             sp.putBoolean(R.string.key_nsclientinternal_autoscroll, isChecked)
-            nsClientPlugin.autoscroll = isChecked
             updateGui()
         }
 
-        binding.paused.isChecked = nsClientPlugin.paused
+        binding.paused.isChecked = sp.getBoolean(R.string.key_nsclientinternal_paused, false)
         binding.paused.setOnCheckedChangeListener { _, isChecked ->
             uel.log(if (isChecked) Action.NS_PAUSED else Action.NS_RESUME, Sources.NSClient)
-            nsClientPlugin.pause(isChecked)
+            activePlugin.activeNsClient?.pause(isChecked)
             updateGui()
         }
     }
@@ -96,7 +96,7 @@ class NSClientFragment : DaggerFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         when (item.itemId) {
             ID_MENU_CLEAR_LOG -> {
-                nsClientPlugin.clearLog()
+                activePlugin.activeNsClient?.clearLog()
                 true
             }
 
@@ -106,7 +106,7 @@ class NSClientFragment : DaggerFragment() {
             }
 
             ID_MENU_SEND_NOW  -> {
-                nsClientPlugin.resend("GUI")
+                activePlugin.activeNsClient?.resend("GUI")
                 true
             }
 
@@ -158,12 +158,12 @@ class NSClientFragment : DaggerFragment() {
 
     private fun updateGui() {
         if (_binding == null) return
-        nsClientPlugin.updateLog()
+        val nsClient = activePlugin.activeNsClient ?: return
         binding.paused.isChecked = sp.getBoolean(R.string.key_nsclientinternal_paused, false)
-        binding.log.text = nsClientPlugin.textLog
-        if (nsClientPlugin.autoscroll) binding.logScrollview.fullScroll(ScrollView.FOCUS_DOWN)
-        binding.url.text = nsClientPlugin.url()
-        binding.status.text = nsClientPlugin.status
+        binding.log.text = nsClient.textLog()
+        if (sp.getBoolean(R.string.key_nsclientinternal_autoscroll, true)) binding.logScrollview.fullScroll(ScrollView.FOCUS_DOWN)
+        binding.url.text = nsClient.address
+        binding.status.text = nsClient.status
         val size = dataSyncSelector.queueSize()
         binding.queue.text = if (size >= 0) size.toString() else rh.gs(R.string.notavailable)
     }

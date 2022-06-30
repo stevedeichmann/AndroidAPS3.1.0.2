@@ -172,6 +172,9 @@ class PluginStore @Inject constructor(
     override val activeIobCobCalculator: IobCobCalculator
         get() = getSpecificPluginsListByInterface(IobCobCalculator::class.java).first() as IobCobCalculator
 
+    override val activeNsClient: NsClient?
+        get() = getTheOneEnabledInArray(getSpecificPluginsListByInterface(NsClient::class.java), PluginType.SYNC) as NsClient?
+
     override fun getPluginsList(): ArrayList<PluginBase> = ArrayList(plugins)
 
 }

@@ -1,7 +1,5 @@
 package info.nightscout.androidaps.interfaces
 
-import java.util.*
-
 interface ActivePlugin {
 
     /**
@@ -57,6 +55,11 @@ interface ActivePlugin {
      *  Always IobCobCalculatorPlugin
      */
     val activeIobCobCalculator: IobCobCalculator
+
+    /**
+     *  Currently selected NsClient plugin
+     */
+    val activeNsClient: NsClient?
 
     /**
      *  List of all registered plugins

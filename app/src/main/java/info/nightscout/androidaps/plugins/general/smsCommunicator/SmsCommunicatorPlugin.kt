@@ -228,7 +228,7 @@ class SmsCommunicatorPlugin @Inject constructor(
     }
 
     fun processSms(receivedSms: Sms) {
-        if (!isEnabled(PluginType.GENERAL)) {
+        if (!isEnabled()) {
             aapsLogger.debug(LTag.SMS, "Ignoring SMS. Plugin disabled.")
             return
         }

@@ -117,7 +117,8 @@ class ConfigBuilderPlugin @Inject constructor(
                 (if (p.isEnabled(PluginType.CONSTRAINTS)) " CONSTRAINTS" else "") +
                 (if (p.isEnabled(PluginType.LOOP)) " LOOP" else "") +
                 (if (p.isEnabled(PluginType.BGSOURCE)) " BGSOURCE" else "") +
-                if (p.isEnabled(PluginType.INSULIN)) " INSULIN" else ""
+                (if (p.isEnabled(PluginType.INSULIN)) " INSULIN" else "") +
+                if (p.isEnabled(PluginType.SYNC)) " SYNC" else ""
             )
         }
     }

@@ -17,6 +17,7 @@ import info.nightscout.androidaps.events.EventPreferenceChange
 import info.nightscout.androidaps.interfaces.BuildHelper
 import info.nightscout.androidaps.interfaces.Config
 import info.nightscout.androidaps.interfaces.DataSyncSelector
+import info.nightscout.androidaps.interfaces.NsClient
 import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.androidaps.plugins.bus.RxBus
 import info.nightscout.androidaps.plugins.general.food.FoodPlugin.FoodWorker
@@ -64,7 +65,7 @@ import java.net.URISyntaxException
 import java.util.*
 import javax.inject.Inject
 
-class NSClientService : DaggerService() {
+class NSClientService : DaggerService(), NsClient.NSClientService {
 
     @Inject lateinit var injector: HasAndroidInjector
     @Inject lateinit var aapsLogger: AAPSLogger
@@ -236,7 +237,7 @@ class NSClientService : DaggerService() {
         if (!nsClientPlugin.isAllowed) {
             rxBus.send(EventNSClientNewLog("NSCLIENT", nsClientPlugin.blockingReason))
             rxBus.send(EventNSClientStatus(nsClientPlugin.blockingReason))
-        } else if (nsClientPlugin.paused) {
+        } else if (sp.getBoolean(R.string.key_nsclientinternal_paused, false)) {
             rxBus.send(EventNSClientNewLog("NSCLIENT", "paused"))
             rxBus.send(EventNSClientStatus("Paused"))
         } else if (!nsEnabled) {
@@ -545,7 +546,7 @@ class NSClientService : DaggerService() {
         }
     }
 
-    fun dbUpdate(collection: String, _id: String?, data: JSONObject?, originalObject: Any, progress: String) {
+    override fun dbUpdate(collection: String, _id: String?, data: JSONObject?, originalObject: Any, progress: String) {
         try {
             if (_id == null) return
             if (!isConnected || !hasWriteAuth) return
@@ -565,7 +566,7 @@ class NSClientService : DaggerService() {
         }
     }
 
-    fun dbAdd(collection: String, data: JSONObject, originalObject: Any, progress: String) {
+    override fun dbAdd(collection: String, data: JSONObject, originalObject: Any, progress: String) {
         try {
             if (!isConnected || !hasWriteAuth) return
             val message = JSONObject()
