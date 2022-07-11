@@ -270,8 +270,8 @@ class DetermineBasalAdapterSMBDynamicISFJS internal constructor(private val scri
         this.mealData.put("lastBolusTime", mealData.lastBolusTime)
         this.mealData.put("lastCarbTime", mealData.lastCarbTime)
 
-        this.mealData.put("TDDAIMI1", tddCalculator.averageTDD(tddCalculator.calculate(1))?.totalAmount)
-        this.mealData.put("TDDAIMI7", tddCalculator.averageTDD(tddCalculator.calculate(7))?.totalAmount)
+        this.mealData.put("TDD1Day", tddCalculator.averageTDD(tddCalculator.calculate(1))?.totalAmount)
+        this.mealData.put("TDD7Days", tddCalculator.averageTDD(tddCalculator.calculate(7))?.totalAmount)
         this.mealData.put("TDDLast4", tddCalculator.calculateDaily(-4, 0).totalAmount)
         this.mealData.put("TDD4to8", tddCalculator.calculateDaily(-8, -4).totalAmount)
         this.mealData.put("TDD24", tddCalculator.calculateDaily(-24, 0).totalAmount)

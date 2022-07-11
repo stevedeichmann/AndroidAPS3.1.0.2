@@ -208,10 +208,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var sens = profile.sens;
 
     var now = new Date().getHours();
-    if (now < 1){
+    if (now < 1) {
         now = 1;
     } else {
-        console.error("Time now is "+now+"; ");
+        console.error("Time now is " + now + "; ");
     }
     //*********************************************************************************
     //**                   Start of Dynamic ISF code for predictions                 **
@@ -222,30 +222,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.error("---------------------------------------------------------");
 
 
-    if (meal_data.TDDAIMI7){
-        var tdd7 = meal_data.TDDAIMI7;
-    } else {
-    	var tdd7 = ((basal * 12)*100)/21;
-    }
-    console.error("7-day average TDD is: " +tdd7+ "; ");
-
-    if (meal_data.TDDLast24){
-		var tdd_24 = meal_data.TDDLast24;
-    } else {
-		var tdd_24 = (( basal * 24 ) * 2.8);
-    }
-
-    if (meal_data.TDDPUMP){
-		var tdd_pump = ( (meal_data.TDDPUMP / now ) * 24);
-	} else {
-        var tdd_pump = (( basal * 24 ) * 2.8);
-    }
-    console.log("Rolling TDD for last 24 hours is: "+tdd_24+"; ");
-
-    var tdd1 = meal_data.TDDAIMI1;
+    var tdd1 = meal_data.TDD1Day;
+    var tdd7 = meal_data.TDD7Days;
     var tdd_4 = meal_data.TDDLast4;
     var tdd8to4 = meal_data.TDD4to8;
-    var tdd_last8_wt = ( ( ( 1.4 * tdd_4) + ( 0.6 * tdd8to4) ) * 3 );
+    var tdd_last8_wt = ( ( 1.4 * tdd_4) + ( 0.6 * tdd8to4) ) * 3;
 
     console.error("Rolling 8 hours weight average: " + tdd_last8_wt + "; ");
     console.error("1-day average TDD is: " + tdd1 + "; ");
@@ -268,8 +249,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
     console.log("For " + profile.insulinType + " (insulin peak: " + profile.insulinPeak + ") insulin divisor is: " + ins_val + "; ");
 
-    var dynISFadjust = profile.DynISFAdjust;
-    dynISFadjust = ( dynISFadjust / 100 );
+    var dynISFadjust = profile.DynISFAdjust / 100;
     TDD = ( dynISFadjust * TDD );
 
     var variable_sens = 1800 / ( TDD * (Math.log(( bg / ins_val ) + 1 ) ) );
