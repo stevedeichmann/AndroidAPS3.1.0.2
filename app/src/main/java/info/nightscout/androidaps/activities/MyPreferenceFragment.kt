@@ -31,8 +31,6 @@ import info.nightscout.androidaps.plugins.constraints.safety.SafetyPlugin
 import info.nightscout.androidaps.plugins.general.automation.AutomationPlugin
 import info.nightscout.androidaps.plugins.general.autotune.AutotunePlugin
 import info.nightscout.androidaps.plugins.general.maintenance.MaintenancePlugin
-import info.nightscout.androidaps.plugins.sync.nsclient.NSClientPlugin
-import info.nightscout.androidaps.plugins.sync.nsclient.data.NSSettingsStatus
 import info.nightscout.androidaps.plugins.general.smsCommunicator.SmsCommunicatorPlugin
 import info.nightscout.androidaps.plugins.general.wear.WearPlugin
 import info.nightscout.androidaps.plugins.general.xdripStatusline.StatusLinePlugin
@@ -45,6 +43,9 @@ import info.nightscout.androidaps.plugins.sensitivity.SensitivityAAPSPlugin
 import info.nightscout.androidaps.plugins.sensitivity.SensitivityOref1Plugin
 import info.nightscout.androidaps.plugins.sensitivity.SensitivityWeightedAveragePlugin
 import info.nightscout.androidaps.plugins.source.*
+import info.nightscout.androidaps.plugins.sync.nsclient.NSClientPlugin
+import info.nightscout.androidaps.plugins.sync.nsclient.data.NSSettingsStatus
+import info.nightscout.androidaps.plugins.sync.nsclientV3.NSClientV3Plugin
 import info.nightscout.androidaps.plugins.sync.tidepool.TidepoolPlugin
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog.show
 import info.nightscout.androidaps.utils.protection.PasswordCheck
@@ -80,6 +81,7 @@ class MyPreferenceFragment : PreferenceFragmentCompat(), OnSharedPreferenceChang
     @Inject lateinit var localInsightPlugin: LocalInsightPlugin
     @Inject lateinit var medtronicPumpPlugin: MedtronicPumpPlugin
     @Inject lateinit var nsClientPlugin: NSClientPlugin
+    @Inject lateinit var nsClientV3Plugin: NSClientV3Plugin
     @Inject lateinit var openAPSAMAPlugin: OpenAPSAMAPlugin
     @Inject lateinit var openAPSSMBPlugin: OpenAPSSMBPlugin
     @Inject lateinit var safetyPlugin: SafetyPlugin
@@ -189,6 +191,7 @@ class MyPreferenceFragment : PreferenceFragmentCompat(), OnSharedPreferenceChang
             addPreferencesFromResourceIfEnabled(virtualPumpPlugin, rootKey)
             addPreferencesFromResourceIfEnabled(insulinOrefFreePeakPlugin, rootKey)
             addPreferencesFromResourceIfEnabled(nsClientPlugin, rootKey)
+            addPreferencesFromResourceIfEnabled(nsClientV3Plugin, rootKey)
             addPreferencesFromResourceIfEnabled(tidepoolPlugin, rootKey)
             addPreferencesFromResourceIfEnabled(smsCommunicatorPlugin, rootKey)
             addPreferencesFromResourceIfEnabled(automationPlugin, rootKey)
@@ -305,16 +308,14 @@ class MyPreferenceFragment : PreferenceFragmentCompat(), OnSharedPreferenceChang
         var visible = false
 
         if (p is PreferenceGroup) {
-            for (i in 0 until p.preferenceCount) {
+            for (i in 0 until p.preferenceCount)
                 visible = updateFilterVisibility(filter, p.getPreference(i)) || visible
-            }
-            if (visible && p is PreferenceCategory) {
-                p.initialExpandedChildrenCount = Int.MAX_VALUE
-            }
+            if (visible && p is PreferenceCategory) p.initialExpandedChildrenCount = Int.MAX_VALUE
         } else {
-                visible = visible || p.key?.contains(filter, true) == true
-                visible = visible || p.title?.contains(filter, true) == true
-                visible = visible || p.summary?.contains(filter, true) == true
+            @Suppress("KotlinConstantConditions")
+            visible = visible || p.key?.contains(filter, true) == true
+            visible = visible || p.title?.contains(filter, true) == true
+            visible = visible || p.summary?.contains(filter, true) == true
         }
 
         p.isVisible = visible
@@ -382,7 +383,7 @@ class MyPreferenceFragment : PreferenceFragmentCompat(), OnSharedPreferenceChang
                 } else {
                     if (pref.key.contains("pin")) {
                         pref.summary = rh.gs(R.string.pin_not_set)
-                    }else {
+                    } else {
                         pref.summary = rh.gs(R.string.password_not_set)
                     }
                 }

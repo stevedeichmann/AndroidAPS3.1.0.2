@@ -204,7 +204,7 @@ class ConfigBuilderFragment : DaggerFragment() {
         }
 
         private fun areMultipleSelectionsAllowed(type: PluginType): Boolean {
-            return type == PluginType.GENERAL || type == PluginType.CONSTRAINTS || type == PluginType.LOOP
+            return type == PluginType.GENERAL || type == PluginType.CONSTRAINTS || type == PluginType.LOOP || type == PluginType.SYNC
         }
     }
 

@@ -779,7 +779,6 @@
     <string name="wear_wizard_settings_summary">Calculations included in the Wizard result:</string>
     <string name="wear_display_settings">Display Settings</string>
     <string name="wear_general_settings">General Settings</string>
-    <string name="enable_nsclient">Enable NSClient</string>
     <string name="welcometosetupwizard">Welcome to setup wizard. It will guide you through the setup process\n</string>
     <string name="readstatus">Read status</string>
     <string name="exitwizard">Skip setup wizard</string>
@@ -787,7 +786,7 @@
     <string name="key_setupwizard_processed" translatable="false">startupwizard_processed</string>
     <string name="setupwizard_sensitivity_description">Sensitivity plugin is used for sensitivity detection and COB calculation. For more info visit:</string>
     <string name="setupwizard_sensitivity_url">https://androidaps.readthedocs.io/en/latest/Configuration/Sensitivity-detection-and-COB.html</string>
-    <string name="nsclientinfotext">NSClient handles connection to Nightscout. You can skip this part now but you will not be able to pass objectives until you set it up.</string>
+    <string name="syncinfotext">Synchronize data to the cloud. You can skip this part now but you will not be able to pass objectives until you set it up.</string>
     <string name="diawarning">Please remember: new insulin profiles require DIA at least 5h. DIA 5–6h on new profile is equal to DIA 3h on old insulin profiles.</string>
     <string name="setupwizard_aps_description">Select one from availables algorithms. They are sorted from oldest to newest. Newer algorithm is usually more powerful and more aggressive. Thus if you are new looper you may probably start with AMA and not with latest one. Do not forget to read the OpenAPS documentation and configure it before use.</string>
     <string name="setupwizard_pump_waiting_for_riley_link_connection">Please configure your RileyLink below. After selecting a RileyLink, it will be possible to continue setup once the RileyLink status is \"Connected\". This might take a minute.\n</string>

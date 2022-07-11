@@ -14,6 +14,7 @@ import info.nightscout.androidaps.interfaces.PluginBase
 import info.nightscout.androidaps.interfaces.PluginDescription
 import info.nightscout.androidaps.interfaces.PluginType
 import info.nightscout.androidaps.interfaces.ResourceHelper
+import info.nightscout.androidaps.interfaces.Sync
 import info.nightscout.androidaps.plugins.bus.RxBus
 import info.nightscout.androidaps.plugins.sync.tidepool.comm.TidepoolUploader
 import info.nightscout.androidaps.plugins.sync.tidepool.comm.UploadChunk
@@ -50,7 +51,7 @@ class TidepoolPlugin @Inject constructor(
     private val sp: SP,
     private val rateLimit: RateLimit,
     private val receiverStatusStore: ReceiverStatusStore
-) : PluginBase(
+) : Sync, PluginBase(
     PluginDescription()
         .mainType(PluginType.SYNC)
         .pluginName(R.string.tidepool)
@@ -174,4 +175,10 @@ class TidepoolPlugin @Inject constructor(
         }
     }
 
+    override val status: String
+        get() = tidepoolUploader.connectionStatus.name
+    override val hasWritePermission: Boolean
+        get() = tidepoolUploader.connectionStatus == TidepoolUploader.ConnectionStatus.CONNECTED
+    override val connected: Boolean
+        get() = tidepoolUploader.connectionStatus == TidepoolUploader.ConnectionStatus.CONNECTED
 }

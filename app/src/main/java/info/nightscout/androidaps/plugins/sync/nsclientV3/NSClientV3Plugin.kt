@@ -1,12 +1,8 @@
-package info.nightscout.androidaps.plugins.sync.nsclient
+package info.nightscout.androidaps.plugins.sync.nsclientV3
 
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Handler
 import android.os.HandlerThread
-import android.os.IBinder
 import android.text.Spanned
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
@@ -14,12 +10,14 @@ import androidx.preference.SwitchPreference
 import dagger.android.HasAndroidInjector
 import info.nightscout.androidaps.Constants
 import info.nightscout.androidaps.R
-import info.nightscout.androidaps.events.EventAppExit
 import info.nightscout.androidaps.events.EventChargingState
 import info.nightscout.androidaps.events.EventNetworkChange
 import info.nightscout.androidaps.events.EventPreferenceChange
 import info.nightscout.androidaps.interfaces.*
 import info.nightscout.androidaps.plugins.bus.RxBus
+import info.nightscout.androidaps.plugins.sync.nsclient.NSClientFragment
+import info.nightscout.androidaps.plugins.sync.nsclient.NsClientReceiverDelegate
+import info.nightscout.androidaps.plugins.sync.nsclient.data.AlarmAck
 import info.nightscout.androidaps.plugins.sync.nsclient.data.NSAlarm
 import info.nightscout.androidaps.plugins.sync.nsclient.events.EventNSClientNewLog
 import info.nightscout.androidaps.plugins.sync.nsclient.events.EventNSClientResend
@@ -39,7 +37,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NSClientPlugin @Inject constructor(
+class NSClientV3Plugin @Inject constructor(
     injector: HasAndroidInjector,
     aapsLogger: AAPSLogger,
     private val aapsSchedulers: AapsSchedulers,
@@ -56,10 +54,10 @@ class NSClientPlugin @Inject constructor(
         .mainType(PluginType.SYNC)
         .fragmentClass(NSClientFragment::class.java.name)
         .pluginIcon(R.drawable.ic_nightscout_syncs)
-        .pluginName(R.string.nsclientinternal)
-        .shortName(R.string.nsclientinternal_shortname)
+        .pluginName(R.string.nsclientv3)
+        .shortName(R.string.nsclientv3_shortname)
         .preferencesId(R.xml.pref_nsclientinternal)
-        .description(R.string.description_ns_client),
+        .description(R.string.description_ns_client_v3),
     aapsLogger, rh, injector
 ) {
 
@@ -74,7 +72,7 @@ class NSClientPlugin @Inject constructor(
         get() = nsClientReceiverDelegate.blockingReason
 
     override fun onStart() {
-        context.bindService(Intent(context, NSClientService::class.java), mConnection, Context.BIND_AUTO_CREATE)
+//        context.bindService(Intent(context, NSClientService::class.java), mConnection, Context.BIND_AUTO_CREATE)
         super.onStart()
         nsClientReceiverDelegate.grabReceiversState()
         disposable += rxBus
@@ -92,10 +90,10 @@ class NSClientPlugin @Inject constructor(
             .toObservable(EventPreferenceChange::class.java)
             .observeOn(aapsSchedulers.io)
             .subscribe({ ev -> nsClientReceiverDelegate.onStatusEvent(ev) }, fabricPrivacy::logException)
-        disposable += rxBus
-            .toObservable(EventAppExit::class.java)
-            .observeOn(aapsSchedulers.io)
-            .subscribe({ if (nsClientService != null) context.unbindService(mConnection) }, fabricPrivacy::logException)
+        // disposable += rxBus
+        //     .toObservable(EventAppExit::class.java)
+        //     .observeOn(aapsSchedulers.io)
+        //     .subscribe({ if (nsClientService != null) context.unbindService(mConnection) }, fabricPrivacy::logException)
         disposable += rxBus
             .toObservable(EventNSClientNewLog::class.java)
             .observeOn(aapsSchedulers.io)
@@ -114,7 +112,7 @@ class NSClientPlugin @Inject constructor(
     }
 
     override fun onStop() {
-        context.applicationContext.unbindService(mConnection)
+        // context.applicationContext.unbindService(mConnection)
         disposable.clear()
         super.onStop()
     }
@@ -132,19 +130,6 @@ class NSClientPlugin @Inject constructor(
 
     override val hasWritePermission: Boolean get() = nsClientService?.hasWriteAuth ?: false
     override val connected: Boolean get() = nsClientService?.isConnected ?: false
-
-    private val mConnection: ServiceConnection = object : ServiceConnection {
-        override fun onServiceDisconnected(name: ComponentName) {
-            aapsLogger.debug(LTag.NSCLIENT, "Service is disconnected")
-            nsClientService = null
-        }
-
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            aapsLogger.debug(LTag.NSCLIENT, "Service is connected")
-            val mLocalBinder = service as NSClientService.LocalBinder?
-            nsClientService = mLocalBinder?.serviceInstance // is null when running in roboelectric
-        }
-    }
 
     override fun clearLog() {
         handler.post {
@@ -197,7 +182,7 @@ class NSClientPlugin @Inject constructor(
             return
         }
         nsClientService?.sendAlarmAck(
-            info.nightscout.androidaps.plugins.sync.nsclient.data.AlarmAck().also { ack ->
+            AlarmAck().also { ack ->
                 ack.level = originalAlarm.level()
                 ack.group = originalAlarm.group()
                 ack.silenceTime = silenceTimeInMilliseconds

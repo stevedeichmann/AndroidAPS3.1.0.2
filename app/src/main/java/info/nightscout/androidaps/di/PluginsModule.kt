@@ -52,6 +52,7 @@ import info.nightscout.androidaps.plugins.sensitivity.SensitivityOref1Plugin
 import info.nightscout.androidaps.plugins.sensitivity.SensitivityWeightedAveragePlugin
 import info.nightscout.androidaps.plugins.source.*
 import info.nightscout.androidaps.plugins.sync.nsclient.NSClientPlugin
+import info.nightscout.androidaps.plugins.sync.nsclientV3.NSClientV3Plugin
 import javax.inject.Qualifier
 
 @Suppress("unused")
@@ -291,6 +292,12 @@ abstract class PluginsModule {
     @IntoMap
     @IntKey(360)
     abstract fun bindNSClientPlugin(plugin: NSClientPlugin): PluginBase
+
+    @Binds
+    @AllConfigs
+    @IntoMap
+    @IntKey(362)
+    abstract fun bindNSClientV3Plugin(plugin: NSClientV3Plugin): PluginBase
 
     @Binds
     @AllConfigs

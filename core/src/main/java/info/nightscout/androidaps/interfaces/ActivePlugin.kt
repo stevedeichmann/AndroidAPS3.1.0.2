@@ -62,6 +62,12 @@ interface ActivePlugin {
     val activeNsClient: NsClient?
 
     /**
+     *  Currently selected Sync plugin
+     */
+    val firstActiveSync: Sync?
+    val activeSyncs: ArrayList<Sync>
+
+    /**
      *  List of all registered plugins
      */
     fun getPluginsList(): ArrayList<PluginBase>
