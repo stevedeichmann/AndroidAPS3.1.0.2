@@ -250,7 +250,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.log("For " + profile.insulinType + " (insulin peak: " + profile.insulinPeak + ") insulin divisor is: " + ins_val + "; ");
 
     var dynISFadjust = profile.DynISFAdjust / 100;
-    TDD = ( dynISFadjust * TDD );
+    TDD = dynISFadjust * TDD;
 
     var variable_sens = 1800 / ( TDD * (Math.log(( bg / ins_val ) + 1 ) ) );
 
@@ -267,7 +267,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //*********************************************************************************
 
 
-    if ( high_temptarget_raises_sensitivity && profile.temptargetSet && target_bg > normalTarget || profile.low_temptarget_lowers_sensitivity && profile.temptargetSet && target_bg < normalTarget ) {
+    if ( high_temptarget_raises_sensitivity && profile.temptargetSet && target_bg > normalTarget
+        || profile.low_temptarget_lowers_sensitivity && profile.temptargetSet && target_bg < normalTarget ) {
         // w/ target 100, temp target 110 = .89, 120 = 0.8, 140 = 0.67, 160 = .57, and 200 = .44
         // e.g.: Sensitivity ratio set to 0.8 based on temp target of 120; Adjusting basal from 1.65 to 1.35; ISF from 58.9 to 73.6
         //sensitivityRatio = 2/(2+(target_bg-normalTarget)/40);
@@ -277,18 +278,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
         sensitivityRatio = round(sensitivityRatio,2);
         console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
-        sens =  sens / sensitivityRatio ;
-        sens = round(sens, 1);
+        sens = round(sens / sensitivityRatio, 1);
         console.log("ISF from " + variable_sens + " to " + sens + "due to temp target; ");
     } else {
         sensitivityRatio = ( meal_data.TDD24 / tdd7 );
-    }
-    if (sensitivityRatio != 1) {
         sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
         sensitivityRatio = round(sensitivityRatio,2);
+        console.log("Sensitivity ratio: "+sensitivityRatio+"; ");
     }
-    console.log("Sensitivity ratio: " + sensitivityRatio + "; ");
-
 
     if (sensitivityRatio && profile.openapsama_useautosens === true) {
         basal = profile.current_basal * sensitivityRatio;
@@ -303,8 +300,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // adjust min, max, and target BG for sensitivity, such that 50% increase in ISF raises target from 100 to 120
     if (profile.temptargetSet) {
         //console.log("Temp Target set, not adjusting with autosens; ");
-    } else {
-        if ( profile.sensitivity_raises_target && sensitivityRatio < 1 && profile.openapsama_useautosens === true || profile.resistance_lowers_target && sensitivityRatio > 1 && profile.openapsama_useautosens === true) {
+    } else if (profile.openapsama_useautosens === true) {
+        if ( profile.sensitivity_raises_target && sensitivityRatio < 1 || profile.resistance_lowers_target && sensitivityRatio > 1) {
             // with a target of 100, default 0.7-1.2 autosens min/max range would allow a 93-117 target range
             min_bg = round((min_bg - 60) / sensitivityRatio) + 60;
             max_bg = round((max_bg - 60) / sensitivityRatio) + 60;

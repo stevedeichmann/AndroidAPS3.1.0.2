@@ -237,7 +237,7 @@ class DetermineBasalAdapterSMBDynamicISFJS internal constructor(private val scri
         this.profile.put("current_basal", basalRate)
         this.profile.put("temptargetSet", tempTargetSet)
         this.profile.put("autosens_max", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autosens_max, "1.2")))
-        this.profile.put("autosens_min", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autosens_min, "0.8")))
+        this.profile.put("autosens_min", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autosens_min, "0.7")))
         this.profile.put("openapsama_useautosens", sp.getBoolean(R.string.key_openapsama_useautosens, false))
         //set the min SMB amount to be the amount set by the pump.
         if (profileFunction.getUnits() == GlucoseUnit.MMOL) {
