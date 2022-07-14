@@ -238,7 +238,6 @@ class DetermineBasalAdapterSMBDynamicISFJS internal constructor(private val scri
         this.profile.put("temptargetSet", tempTargetSet)
         this.profile.put("autosens_max", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autosens_max, "1.2")))
         this.profile.put("autosens_min", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autosens_min, "0.7")))
-        this.profile.put("openapsama_useautosens", sp.getBoolean(R.string.key_openapsama_useautosens, false))
         //set the min SMB amount to be the amount set by the pump.
         if (profileFunction.getUnits() == GlucoseUnit.MMOL) {
             this.profile.put("out_units", "mmol/L")
@@ -270,19 +269,21 @@ class DetermineBasalAdapterSMBDynamicISFJS internal constructor(private val scri
         this.mealData.put("lastBolusTime", mealData.lastBolusTime)
         this.mealData.put("lastCarbTime", mealData.lastCarbTime)
 
+        val tdd7 = tddCalculator.averageTDD(tddCalculator.calculate(7))?.totalAmount
+        val tdd24 = tddCalculator.calculateDaily(-24, 0).totalAmount
+
         this.mealData.put("TDD1Day", tddCalculator.averageTDD(tddCalculator.calculate(1))?.totalAmount)
-        this.mealData.put("TDD7Days", tddCalculator.averageTDD(tddCalculator.calculate(7))?.totalAmount)
+        this.mealData.put("TDD7Days", tdd7)
         this.mealData.put("TDDLast4", tddCalculator.calculateDaily(-4, 0).totalAmount)
         this.mealData.put("TDD4to8", tddCalculator.calculateDaily(-8, -4).totalAmount)
-        this.mealData.put("TDD24", tddCalculator.calculateDaily(-24, 0).totalAmount)
+        this.mealData.put("TDD24", tdd24)
 
 
-
-        if (constraintChecker.isAutosensModeEnabled().value()) {
-            autosensData.put("ratio", autosensDataRatio)
-        } else {
+        if (sp.getBoolean(R.string.key_adjust_sensitivity, false) && tdd7 != null)
+            autosensData.put("ratio", tdd24 / tdd7)
+        else
             autosensData.put("ratio", 1.0)
-        }
+
         this.microBolusAllowed = microBolusAllowed
         smbAlwaysAllowed = advancedFiltering
         currentTime = now

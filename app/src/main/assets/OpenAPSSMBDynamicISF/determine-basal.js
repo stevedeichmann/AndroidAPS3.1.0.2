@@ -203,16 +203,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // 80 mg/dL with low_temptarget_lowers_sensitivity would give 1.5x basal, but is limited to autosens_max (1.2x by default)
     }
 
-
-    var profile_sens = round(profile.sens,1)
-    var sens = profile.sens;
-
-    var now = new Date().getHours();
-    if (now < 1) {
-        now = 1;
-    } else {
-        console.error("Time now is " + now + "; ");
-    }
     //*********************************************************************************
     //**                   Start of Dynamic ISF code for predictions                 **
     //*********************************************************************************
@@ -260,7 +250,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log("TDD adjusted to " + TDD + " using adjustment factor of " + dynISFadjust + "; ");
     }
     console.log("Current sensitivity for predictions is " + variable_sens + " based on current bg");
-    sens = variable_sens;
 
     //*********************************************************************************
     //**                   End of Dynamic ISF code for predictions                   **
@@ -278,34 +267,29 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
         sensitivityRatio = round(sensitivityRatio,2);
         console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
-        sens = round(sens / sensitivityRatio, 1);
-        console.log("ISF from " + variable_sens + " to " + sens + "due to temp target; ");
-    } else {
-        sensitivityRatio = ( meal_data.TDD24 / tdd7 );
-        sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
-        sensitivityRatio = round(sensitivityRatio,2);
-        console.log("Sensitivity ratio: "+sensitivityRatio+"; ");
+    } else if (typeof autosens_data !== 'undefined' && autosens_data) {
+        sensitivityRatio = autosens_data.ratio;
+        console.log("Autosens ratio: "+sensitivityRatio+"; ");
     }
-
-    if (sensitivityRatio && profile.openapsama_useautosens === true) {
+    if (sensitivityRatio) {
         basal = profile.current_basal * sensitivityRatio;
         basal = round_basal(basal, profile);
         if (basal !== profile_current_basal) {
             console.log("Adjusting basal from "+profile_current_basal+" to "+basal+"; ");
         } else {
-            console.log("Autosens disabled. Basal unchanged: "+basal+"; ");
+            console.log("Basal unchanged: "+basal+"; ");
         }
     }
 
     // adjust min, max, and target BG for sensitivity, such that 50% increase in ISF raises target from 100 to 120
     if (profile.temptargetSet) {
         //console.log("Temp Target set, not adjusting with autosens; ");
-    } else if (profile.openapsama_useautosens === true) {
-        if ( profile.sensitivity_raises_target && sensitivityRatio < 1 || profile.resistance_lowers_target && sensitivityRatio > 1) {
+    } else if (typeof autosens_data !== 'undefined' && autosens_data) {
+        if ( profile.sensitivity_raises_target && autosens_data.ratio < 1 || profile.resistance_lowers_target && autosens_data.ratio > 1 ) {
             // with a target of 100, default 0.7-1.2 autosens min/max range would allow a 93-117 target range
-            min_bg = round((min_bg - 60) / sensitivityRatio) + 60;
-            max_bg = round((max_bg - 60) / sensitivityRatio) + 60;
-            var new_target_bg = round((target_bg - 60) / sensitivityRatio) + 60;
+            min_bg = round((min_bg - 60) / autosens_data.ratio) + 60;
+            max_bg = round((max_bg - 60) / autosens_data.ratio) + 60;
+            var new_target_bg = round((target_bg - 60) / autosens_data.ratio) + 60;
             // don't allow target_bg below 80
             new_target_bg = Math.max(80, new_target_bg);
             if (target_bg === new_target_bg) {
@@ -345,8 +329,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var minAvgDelta = Math.min(glucose_status.short_avgdelta, glucose_status.long_avgdelta);
     var maxDelta = Math.max(glucose_status.delta, glucose_status.short_avgdelta, glucose_status.long_avgdelta);
 
-
-    console.error("; CR:",profile.carb_ratio);
+    var sens = variable_sens
 
     // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
     var lastTempAge;

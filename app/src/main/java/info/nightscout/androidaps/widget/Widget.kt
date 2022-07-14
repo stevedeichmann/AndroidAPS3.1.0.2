@@ -226,7 +226,7 @@ class Widget : AppWidgetProvider() {
     }
 
     private fun updateSensitivity(views: RemoteViews) {
-        if (sp.getBoolean(R.string.key_openapsama_useautosens, false) && constraintChecker.isAutosensModeEnabled().value())
+        if (constraintChecker.isAutosensModeEnabled().value())
             views.setImageViewResource(R.id.sensitivity_icon, R.drawable.ic_swap_vert_black_48dp_green)
         else
             views.setImageViewResource(R.id.sensitivity_icon, R.drawable.ic_x_swap_vert)
