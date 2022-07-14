@@ -211,45 +211,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.error( " Dynamic ISF version Beta 1.6.5 ");
     console.error("---------------------------------------------------------");
 
-
-    var tdd1 = meal_data.TDD1Day;
-    var tdd7 = meal_data.TDD7Days;
-    var tdd_4 = meal_data.TDDLast4;
-    var tdd8to4 = meal_data.TDD4to8;
-    var tdd_last8_wt = ( ( 1.4 * tdd_4) + ( 0.6 * tdd8to4) ) * 3;
-
-    console.error("Rolling 8 hours weight average: " + tdd_last8_wt + "; ");
-    console.error("1-day average TDD is: " + tdd1 + "; ");
-    console.error("7-day average TDD is: " + tdd7 + "; ");
-
-    var TDD = ( tdd_last8_wt * 0.33 ) + ( tdd7 * 0.34 ) + (tdd1 * 0.33);
-    console.log("TDD = " + TDD + " using average of 7-day, 1-day and weighted 8hr average");
-
-
-    var insulin = profile.insulinType;
-    console.log("Insulin Peak = " + profile.insulinPeak + "; ");
-
-    var ins_val;
-    if (profile.insulinPeak > 65) { // lyumjev peak: 45
-        ins_val = 55;
-    } else if (profile.insulinPeak > 50 ){ // ultra rapid peak: 55
-        ins_val = 65;
-    } else {
-        ins_val = 75; // rapid peak: 75
-    }
-    console.log("For " + profile.insulinType + " (insulin peak: " + profile.insulinPeak + ") insulin divisor is: " + ins_val + "; ");
-
-    var dynISFadjust = profile.DynISFAdjust / 100;
-    TDD = dynISFadjust * TDD;
-
-    var variable_sens = 1800 / ( TDD * (Math.log(( bg / ins_val ) + 1 ) ) );
-
-    variable_sens = round(variable_sens,1);
-
-    if (dynISFadjust != 1 ) {
-        console.log("TDD adjusted to " + TDD + " using adjustment factor of " + dynISFadjust + "; ");
-    }
-    console.log("Current sensitivity for predictions is " + variable_sens + " based on current bg");
+    var variable_sens = profile.variable_sens;
+    var TDD = profile.TDD;
+    var insulinDivisor = profile.insulinDivisor;
 
     //*********************************************************************************
     //**                   End of Dynamic ISF code for predictions                   **
