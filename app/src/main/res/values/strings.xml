@@ -616,7 +616,7 @@
     <string name="overview_editquickwizard_usepercentage">Percentage calculation</string>
     <string name="loopenabled">Loop enabled</string>
     <string name="apsselected">APS selected</string>
-    <string name="nsclienthaswritepermission">NSClient has write permission</string>
+    <string name="synchaswritepermission">Synchronization service has write permission</string>
     <string name="closedmodeenabled">Closed mode enabled</string>
     <string name="maxiobset">Maximal IOB set properly</string>
     <string name="hasbgdata">BG available from selected source</string>

@@ -1,17 +1,14 @@
 package info.nightscout.androidaps.plugins.constraints.objectives.objectives
 
-import androidx.fragment.app.FragmentActivity
 import dagger.android.HasAndroidInjector
 import info.nightscout.androidaps.R
 import info.nightscout.androidaps.interfaces.ActivePlugin
-import info.nightscout.androidaps.plugins.constraints.objectives.ObjectivesPlugin
 import info.nightscout.androidaps.utils.T
 import javax.inject.Inject
 
 @Suppress("SpellCheckingInspection")
 class Objective3 @Inject constructor(injector: HasAndroidInjector) : Objective(injector, "openloop", R.string.objectives_openloop_objective, R.string.objectives_openloop_gate) {
 
-    @Inject lateinit var objectivesPlugin: ObjectivesPlugin
     @Inject lateinit var activePlugin: ActivePlugin
 
     init {
@@ -25,13 +22,6 @@ class Objective3 @Inject constructor(injector: HasAndroidInjector) : Objective(i
                 get() = if (sp.getInt(R.string.key_ObjectivesmanualEnacts, 0) >= MANUAL_ENACTS_NEEDED) rh.gs(R.string.completed_well_done) else sp.getInt(R.string.key_ObjectivesmanualEnacts, 0)
                     .toString() + " / " + MANUAL_ENACTS_NEEDED
         })
-    }
-
-    override fun specialActionEnabled(): Boolean =
-        activePlugin.activeNsClient?.connected == true && activePlugin.activeNsClient?.hasWritePermission == true
-
-    override fun specialAction(activity: FragmentActivity, input: String) {
-        objectivesPlugin.completeObjectives(activity, input)
     }
 
     companion object {

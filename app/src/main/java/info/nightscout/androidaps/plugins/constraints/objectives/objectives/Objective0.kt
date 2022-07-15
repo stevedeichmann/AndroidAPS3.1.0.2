@@ -25,9 +25,9 @@ class Objective0(injector: HasAndroidInjector) : Objective(injector, "config", R
                 return sp.getBoolean(R.string.key_ObjectivesbgIsAvailableInNS, false)
             }
         })
-        tasks.add(object : Task(this, R.string.nsclienthaswritepermission) {
+        tasks.add(object : Task(this, R.string.synchaswritepermission) {
             override fun isCompleted(): Boolean {
-                return activePlugin.activeNsClient?.hasWritePermission == true
+                return activePlugin.firstActiveSync?.hasWritePermission == true
             }
         })
         tasks.add(object : Task(this, R.string.virtualpump_uploadstatus_title) {
