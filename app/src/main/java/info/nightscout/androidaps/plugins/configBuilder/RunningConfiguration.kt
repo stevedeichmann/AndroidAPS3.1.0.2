@@ -60,11 +60,11 @@ class RunningConfiguration @Inject constructor(
     }
 
     // called in NSClient mode only
-    fun apply(configuration: JSONObject) {
+    fun apply(configuration: JSONObject, version: NsClient.Version) {
         assert(config.NSCLIENT)
 
         if (configuration.has("version")) {
-            rxBus.send(EventNSClientNewLog("VERSION", "Received AndroidAPS version  ${configuration.getString("version")}"))
+            rxBus.send(EventNSClientNewLog("VERSION", "Received AndroidAPS version  ${configuration.getString("version")}", version))
             if (config.VERSION_NAME.startsWith(configuration.getString("version")).not()) {
                 rxBus.send(EventNewNotification(Notification(Notification.NSCLIENT_VERSION_DOES_NOT_MATCH, rh.gs(R.string.nsclient_version_does_not_match), Notification.NORMAL)))
             }

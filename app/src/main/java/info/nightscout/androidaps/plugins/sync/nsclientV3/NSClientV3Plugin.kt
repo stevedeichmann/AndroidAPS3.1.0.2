@@ -20,10 +20,10 @@ import info.nightscout.androidaps.plugins.sync.nsclient.NsClientReceiverDelegate
 import info.nightscout.androidaps.plugins.sync.nsclient.data.AlarmAck
 import info.nightscout.androidaps.plugins.sync.nsclient.data.NSAlarm
 import info.nightscout.androidaps.plugins.sync.nsclient.events.EventNSClientNewLog
-import info.nightscout.androidaps.plugins.sync.nsclient.events.EventNSClientResend
-import info.nightscout.androidaps.plugins.sync.nsclient.events.EventNSClientStatus
-import info.nightscout.androidaps.plugins.sync.nsclient.events.EventNSClientUpdateGUI
 import info.nightscout.androidaps.plugins.sync.nsclient.services.NSClientService
+import info.nightscout.androidaps.plugins.sync.nsclientV3.events.EventNSClientV3Resend
+import info.nightscout.androidaps.plugins.sync.nsclientV3.events.EventNSClientV3Status
+import info.nightscout.androidaps.plugins.sync.nsclientV3.events.EventNSClientV3UpdateGUI
 import info.nightscout.androidaps.utils.FabricPrivacy
 import info.nightscout.androidaps.utils.HtmlHelper.fromHtml
 import info.nightscout.androidaps.utils.ToastUtils
@@ -76,11 +76,11 @@ class NSClientV3Plugin @Inject constructor(
         super.onStart()
         nsClientReceiverDelegate.grabReceiversState()
         disposable += rxBus
-            .toObservable(EventNSClientStatus::class.java)
+            .toObservable(EventNSClientV3Status::class.java)
             .observeOn(aapsSchedulers.io)
-            .subscribe({ event: EventNSClientStatus ->
+            .subscribe({ event: EventNSClientV3Status ->
                            status = event.getStatus(rh)
-                           rxBus.send(EventNSClientUpdateGUI())
+                           rxBus.send(EventNSClientV3UpdateGUI())
                        }, fabricPrivacy::logException)
         disposable += rxBus
             .toObservable(EventNetworkChange::class.java)
@@ -97,7 +97,8 @@ class NSClientV3Plugin @Inject constructor(
         disposable += rxBus
             .toObservable(EventNSClientNewLog::class.java)
             .observeOn(aapsSchedulers.io)
-            .subscribe({ event: EventNSClientNewLog ->
+            .subscribe({ event ->
+                           if (event.version != NsClient.Version.V3) return@subscribe
                            addToLog(event)
                            aapsLogger.debug(LTag.NSCLIENT, event.action + " " + event.logText)
                        }, fabricPrivacy::logException)
@@ -106,7 +107,7 @@ class NSClientV3Plugin @Inject constructor(
             .observeOn(aapsSchedulers.io)
             .subscribe({ ev -> nsClientReceiverDelegate.onStatusEvent(ev) }, fabricPrivacy::logException)
         disposable += rxBus
-            .toObservable(EventNSClientResend::class.java)
+            .toObservable(EventNSClientV3Resend::class.java)
             .observeOn(aapsSchedulers.io)
             .subscribe({ event -> resend(event.reason) }, fabricPrivacy::logException)
     }
@@ -134,7 +135,7 @@ class NSClientV3Plugin @Inject constructor(
     override fun clearLog() {
         handler.post {
             synchronized(listLog) { listLog.clear() }
-            rxBus.send(EventNSClientUpdateGUI())
+            rxBus.send(EventNSClientV3UpdateGUI())
         }
     }
 
@@ -147,7 +148,7 @@ class NSClientV3Plugin @Inject constructor(
                     listLog.removeAt(0)
                 }
             }
-            rxBus.send(EventNSClientUpdateGUI())
+            rxBus.send(EventNSClientV3UpdateGUI())
         }
     }
 
@@ -173,7 +174,10 @@ class NSClientV3Plugin @Inject constructor(
         rxBus.send(EventPreferenceChange(rh, R.string.key_nsclientinternal_paused))
     }
 
-    override val address: String get() = nsClientService?.nsURL ?: ""
+    override val version: NsClient.Version
+        get() = NsClient.Version.V3
+
+    override val address: String get() = sp.getString(R.string.key_nsclientinternal_url, "")
 
     fun handleClearAlarm(originalAlarm: NSAlarm, silenceTimeInMilliseconds: Long) {
         if (!isEnabled()) return

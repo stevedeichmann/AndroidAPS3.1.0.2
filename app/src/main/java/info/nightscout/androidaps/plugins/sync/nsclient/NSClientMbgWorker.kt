@@ -8,13 +8,13 @@ import dagger.android.HasAndroidInjector
 import info.nightscout.androidaps.R
 import info.nightscout.androidaps.database.AppRepository
 import info.nightscout.androidaps.database.transactions.SyncNsTherapyEventTransaction
-import info.nightscout.androidaps.extensions.therapyEventFromNsMbg
 import info.nightscout.androidaps.interfaces.Config
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
 import info.nightscout.androidaps.plugins.sync.nsclient.data.NSMbg
 import info.nightscout.androidaps.receivers.DataWorker
 import info.nightscout.androidaps.interfaces.BuildHelper
+import info.nightscout.androidaps.utils.extensions.therapyEventFromNsMbg
 import info.nightscout.shared.sharedPreferences.SP
 import javax.inject.Inject
 

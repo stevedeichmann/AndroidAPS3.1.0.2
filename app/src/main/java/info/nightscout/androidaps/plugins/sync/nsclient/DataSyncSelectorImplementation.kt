@@ -12,6 +12,7 @@ import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
 import info.nightscout.androidaps.plugins.profile.local.LocalProfilePlugin
 import info.nightscout.androidaps.utils.DateUtil
+import info.nightscout.androidaps.utils.extensions.toJson
 import info.nightscout.shared.sharedPreferences.SP
 import javax.inject.Inject
 import javax.inject.Singleton

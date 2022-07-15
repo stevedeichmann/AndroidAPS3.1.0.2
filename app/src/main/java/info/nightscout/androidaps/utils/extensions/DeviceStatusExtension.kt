@@ -1,4 +1,4 @@
-package info.nightscout.androidaps.extensions
+package info.nightscout.androidaps.utils.extensions
 
 import android.os.Build
 import info.nightscout.androidaps.database.entities.DeviceStatus

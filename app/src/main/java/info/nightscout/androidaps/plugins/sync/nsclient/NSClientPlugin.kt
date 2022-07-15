@@ -100,6 +100,7 @@ class NSClientPlugin @Inject constructor(
             .toObservable(EventNSClientNewLog::class.java)
             .observeOn(aapsSchedulers.io)
             .subscribe({ event: EventNSClientNewLog ->
+                           if (event.version != NsClient.Version.V1) return@subscribe
                            addToLog(event)
                            aapsLogger.debug(LTag.NSCLIENT, event.action + " " + event.logText)
                        }, fabricPrivacy::logException)
@@ -187,6 +188,9 @@ class NSClientPlugin @Inject constructor(
         sp.putBoolean(R.string.key_nsclientinternal_paused, newState)
         rxBus.send(EventPreferenceChange(rh, R.string.key_nsclientinternal_paused))
     }
+
+    override val version: NsClient.Version
+        get() = NsClient.Version.V1
 
     override val address: String get() = nsClientService?.nsURL ?: ""
 

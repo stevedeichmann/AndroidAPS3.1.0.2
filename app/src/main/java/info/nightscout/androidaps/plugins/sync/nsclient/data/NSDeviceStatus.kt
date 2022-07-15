@@ -4,6 +4,7 @@ import android.text.Spanned
 import dagger.android.HasAndroidInjector
 import info.nightscout.androidaps.R
 import info.nightscout.androidaps.interfaces.Config
+import info.nightscout.androidaps.interfaces.NsClient
 import info.nightscout.androidaps.plugins.aps.loop.APSResult
 import info.nightscout.androidaps.plugins.configBuilder.RunningConfiguration
 import info.nightscout.androidaps.utils.DateUtil
@@ -85,7 +86,7 @@ class NSDeviceStatus @Inject constructor(
 ) {
 
     private var data: JSONObject? = null
-    fun handleNewData(deviceStatuses: JSONArray) {
+    fun handleNewData(deviceStatuses: JSONArray, version: NsClient.Version) {
         aapsLogger.debug(LTag.NSCLIENT, "Got NS deviceStatus: \$deviceStatuses")
         try {
             for (i in deviceStatuses.length() - 1 downTo 0) {
@@ -98,7 +99,7 @@ class NSDeviceStatus @Inject constructor(
                     }
                     if (devicestatusJson.has("configuration") && config.NSCLIENT) {
                         // copy configuration of Insulin and Sensitivity from main AAPS
-                        runningConfiguration.apply(devicestatusJson.getJSONObject("configuration"))
+                        runningConfiguration.apply(devicestatusJson.getJSONObject("configuration"), version)
                         break
                     }
                 }

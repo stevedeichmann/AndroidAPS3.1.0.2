@@ -4,10 +4,14 @@ import android.text.Spanned
 import org.json.JSONObject
 
 interface NsClient : Sync {
+    enum class Version {
+        NONE, V1, V3
+    }
 
+    val version: Version
     val address: String
-
     val nsClientService: NSClientService?
+
     fun pause(newState: Boolean)
     fun resend(reason: String)
     fun textLog(): Spanned
